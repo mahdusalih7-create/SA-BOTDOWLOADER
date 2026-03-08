@@ -13,7 +13,6 @@ async def message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     text = update.message.text
 
     if not url_regex.search(text):
-
         await update.message.reply_text(
             "حبيبي حط رابط تضحك عليه انته ههههههههههههههههههههههههههههههههه\n\n"
             "صانع البوت ----» @wi6j1"
@@ -22,6 +21,7 @@ async def message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     context.user_data["url"] = text
 
+    # زر "تحميل كموسيقى" تم حذفه
     buttons = [
         [InlineKeyboardButton("🎧 تحميل كملف صوتي", callback_data="voice")],
         [InlineKeyboardButton("🎥 تحميل كفيديو", callback_data="video")]
@@ -66,29 +66,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
             )
 
             os.remove(filename)
-
-        elif query.data == "music":
-
-            ydl_opts = {
-                "format": "bestaudio/best",
-                "outtmpl": "audio.%(ext)s",
-                "postprocessors": [{
-                    "key": "FFmpegExtractAudio",
-                    "preferredcodec": "mp3",
-                    "preferredquality": "192"
-                }],
-                "quiet": True
-            }
-
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                ydl.extract_info(url, download=True)
-
-            await query.message.reply_audio(
-                audio=open("audio.mp3", "rb"),
-                caption="صانع البوت ----» @wi6j1"
-            )
-
-            os.remove("audio.mp3")
 
         elif query.data == "voice":
 
