@@ -23,7 +23,6 @@ async def message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data["url"] = text
 
     buttons = [
-        [InlineKeyboardButton("🎵 تحميل كموسيقى", callback_data="music")],
         [InlineKeyboardButton("🎧 تحميل كملف صوتي", callback_data="voice")],
         [InlineKeyboardButton("🎥 تحميل كفيديو", callback_data="video")]
     ]
