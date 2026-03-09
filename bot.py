@@ -22,6 +22,7 @@ async def message_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     context.user_data["url"] = text
 
     buttons = [
+        [InlineKeyboardButton("📷 تحميل كصورة", callback_data="image")],
         [InlineKeyboardButton("🎧 تحميل كملف صوتي", callback_data="voice")],
         [InlineKeyboardButton("🎥 تحميل كفيديو", callback_data="video")]
     ]
@@ -45,12 +46,32 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
 
     try:
-        if query.data == "video":
+
+        if query.data == "image":
+            ydl_opts = {
+                "skip_download": True,
+                "write_all_thumbnails": True,
+                "outtmpl": "img.%(ext)s",
+                "quiet": True
+            }
+
+            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+                ydl.extract_info(url, download=True)
+
+            images = glob.glob("*.jpg") + glob.glob("*.png") + glob.glob("*.webp")
+
+            for img in images:
+                await query.message.reply_photo(
+                    photo=open(img, "rb"),
+                    caption="صانع البوت ----» @wi6j1"
+                )
+                os.remove(img)
+
+        elif query.data == "video":
             ydl_opts = {
                 "format": "best",
                 "outtmpl": "video.%(ext)s",
-                "quiet": True,
-                "write_all_thumbnails": True
+                "quiet": True
             }
 
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -61,15 +82,6 @@ async def button_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 video=open(filename, "rb"),
                 caption="صانع البوت ----» @wi6j1"
             )
-
-            images = glob.glob("*.jpg") + glob.glob("*.webp") + glob.glob("*.png")
-
-            for img in images:
-                try:
-                    await query.message.reply_photo(photo=open(img, "rb"))
-                    os.remove(img)
-                except:
-                    pass
 
             os.remove(filename)
 
