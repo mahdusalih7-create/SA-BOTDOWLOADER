@@ -1,4 +1,5 @@
 python-telegram-bot
 yt-dlp
 requests
+instaloader
 ffmpeg-python
